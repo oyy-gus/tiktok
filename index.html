@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Downloader TikTok</title>
+</head>
+<body>
+  <h2>Masukkan URL TikTok</h2>
+  <form id="downloadForm">
+    <input type="text" id="urlInput" placeholder="https://www.tiktok.com/..." required />
+    <button type="submit">Download</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const backendUrl = 'https://fluttering-magenta-network.glitch.me'; // ganti dengan URL Glitch kamu
+
+    document.getElementById('downloadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = document.getElementById('urlInput').value;
+      const result = document.getElementById('result');
+      result.textContent = 'Memproses...';
+
+      try {
+        const res = await fetch(`${backendUrl}/download`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          result.innerHTML = `<p>Video ditemukan:</p><a href="${data.videoUrl}" target="_blank">Download Video</a>`;
+        } else {
+          result.textContent = data.message || 'Video tidak ditemukan.';
+        }
+      } catch (err) {
+        result.textContent = 'Gagal terhubung ke server.';
+      }
+    });
+  </script>
+</body>
+</html>
